@@ -1,0 +1,103 @@
+syntax = "proto3";
+
+package authy.protobuf;
+
+import "google/protobuf/timestamp.proto";
+
+service AuthService {
+    rpc CreateOtpChallenge(CreateOtpChallengeRequest) returns (CreateOtpChallengeResponse);
+    rpc ConfirmOtp(ConfirmOtpRequest) returns (ConfirmOtpResponse);
+
+    rpc SignUp(SignUpRequest) returns (SignUpResponse);
+    rpc SignIn(SignInRequest) returns (SignInResponse);
+}
+
+// create otp challenge with email
+message CreateOtpChallengeRequest {
+    string email = 1;
+    ActionPurpose action_purpose = 2;
+
+    enum ActionPurpose {
+        SIGN_UP = 0;
+        SIGN_IN = 1; // sign in via otp
+        RESET_PASSWORD = 2;
+    }
+}
+
+message CreateOtpChallengeResponse {
+    string challenge_token = 1;
+}
+
+message ConfirmOtpRequest {
+    string challenge_token = 1;
+    string otp = 2;
+}
+
+message ConfirmOtpResponse {
+    bool success = 1;
+    string message = 2;
+    optional string action_token = 3;
+    Error error = 4;
+
+    enum Error  {
+        INVALID_OTP = 0;
+        EXPIRED_OTP = 1;
+        MAX_ATTEMPTS_REACHED = 2;
+    }
+}
+
+message SignUpRequest {
+    string email = 1;
+    string username = 2;
+    string password = 3;
+    string fullname = 4;
+    string gender = 5;
+    google.protobuf.Timestamp birthdate = 6;
+    string action_token = 7;
+}
+
+message SignUpResponse {
+    bool success = 1;
+    string message = 2;
+    optional string session_token = 3;
+    Error error = 4;
+    User user = 5;
+
+    enum Error {
+        INVALID_ACTION_TOKEN = 0;
+        EMAIL_ALREADY_EXISTS = 1;
+        USERNAME_ALREADY_EXISTS = 2;
+    }
+}
+
+message User {
+    string username = 1;
+    string email = 2;
+    string fullname = 3;
+    string gender = 4;
+    google.protobuf.Timestamp birthdate = 5;
+    google.protobuf.Timestamp created_at = 6;
+}
+
+
+message SignInRequest {
+    oneof signInBy { 
+        string email = 1;
+        string username = 2;
+        string action_token = 4;
+    }
+    string password = 3;
+}
+
+message SignInResponse {
+    bool success = 1;
+    string sessin_token = 2;
+    string message = 3;
+    optional User user = 4;
+    Error error = 5;
+
+    enum Error {
+        INVALID_CREDENTIALS = 0;
+        INVALID_ACTION_TOKEN = 1;
+    }
+}

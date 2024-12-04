@@ -1,0 +1,10 @@
+[package]
+name = "authy"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = {workspace =true}
+tonic = {workspace =true}
+tonic-reflection = {workspace =true}
+serde = {workspace = true }
