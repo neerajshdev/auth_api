@@ -6,9 +6,14 @@ cover_image: "https://dev-to-uploads.s3.amazonaws.com/uploads/articles/tq91kc9g8
 published: false
 ---
 
+## Introduction
+
+In the previous part, we set up our project structure. Now we'll define our gRPC service interface using Protocol Buffers. This interface will serve as the contract between our client and server.
+
+
 ## Table of Contents
 
-- [Creating the proto definition for the authentication service](#creating-the-proto-definition-for-the-authentication-service)
+- [Defining the authentication proto.](#defining-the-protobuf-scheme)
   - [Service Definition](#service-definition)
   - [OTP Challenge Messages](#otp-challenge-messages)
   - [OTP Confirmation Messages](#otp-confirmation-messages)
@@ -16,16 +21,17 @@ published: false
   - [Sign In Messages](#sign-in-messages)
   - [User Message Type](#user-message-type)
 
-## Creating the proto definition for the authentication service
+## Defining the Protobuf Scheme
 
-In the previous part, we created the project structure and defined our workspace with its sub-projects (crates). In this part, we will define the proto file for the authentication service. The proto file defines the service methods and message types that the gRPC server will use to communicate with the client.
+In the previous part, we set up our project structure. Now we'll define our gRPC service interface using Protocol Buffers. This interface will serve as the contract between our client and server.
 
 ### Service Definition
 
-Now let's create the main.proto file in the proto_stub/proto/authy/protobuf directory. The main.proto file defines the service methods and message types for the authentication service.
+First, let's create our main.proto file. This file will contain all our service and message definitions.
+
+Location: `proto_stub/proto/authy/protobuf/main.proto`
 
 ```protobuf
-# /proto_stub/proto/authy/protobuf/main.proto
 
 syntax = "proto3";
 package authy.protobuf;
@@ -53,7 +59,6 @@ The main.proto file defines the AuthService service with the following methods:
 Now let's define the `CreateOtpChallengeRequest` and `CreateOtpChallengeResponse` message types.
 
 ```protobuf
-# /proto_stub/proto/authy/protobuf/main.proto
 message CreateOtpChallengeRequest {
     string email = 1;
     ActionPurpose action_purpose = 2;
@@ -82,7 +87,6 @@ The `CreateOtpChallengeResponse` message type defines the fields for the OTP cha
 Now let's define the `ConfirmOtpRequest` and `ConfirmOtpResponse` message types.
 
 ```protobuf
-# /proto_stub/proto/authy/protobuf/main.proto
 message ConfirmOtpRequest {
     string challenge_token = 1;
     string otp_code = 2;
@@ -111,7 +115,6 @@ The `ConfirmOtpResponse` message type defines the fields for the ConfirmOtp resp
 Now let's define the `SignUpRequest` and `SignUpResponse` message types.
 
 ```protobuf
-# /proto_stub/proto/authy/protobuf/main.proto
 message SignUpRequest {
     string email = 1;
     string username = 2;
@@ -146,7 +149,6 @@ The `SignUpResponse` message type defines the fields for the SignUp response. Th
 Now let's define the `SignInRequest` and `SignInResponse` message types.
 
 ```protobuf
-# /proto_stub/proto/authy/protobuf/main.proto
 message SignInRequest {
     oneof signInBy { 
         string email = 1;
@@ -182,7 +184,6 @@ Also, defines the User message type that contains the user information. This mes
 Note that we are using the `google.protobuf.Timestamp` type for the birthdate and created_at fields. So don't forget to import the timestamp.proto file at the top of the main.proto file.
 
 ```protobuf
-# /proto_stub/proto/authy/protobuf/main.proto
 message User {
     string username = 1;
     string email = 2;
