@@ -44,7 +44,7 @@ This algorithm used a single key for both signing and verifying the token. In th
 
 ## Project Structure
 
-The project will be organized into the following modules:
+The project will be organized into the following packages:
 
 1. `authy`: The authentication service crate that handles user registration, login, and password reset.
 2. `proto_stub`: The gRPC service definition creat that defines the service methods and message types.
@@ -80,6 +80,8 @@ The following defines the project structure:
 
 Splitting the project into multiple crates allows us to separate concerns and keep the codebase organized. This would also make it easier to test and maintain the code. Because of this, we are going to use cargo workspace for this project.
 
+A workspace is a set of packages that share the same Cargo.lock and output directory. This means that all the packages in a workspace will share the same dependencies and build artifacts. This is useful when you have multiple packages that depend on the same set of dependencies and you want to avoid duplicating them.
+
 Create a new project and open it in Visual Studio Code. Also, delete the src directory in the root of the project.
 
 ```bash
@@ -99,6 +101,7 @@ members = []
 tokio = { version = "1.0", features = ["full"] }
 tonic = "0.12.3"
 tonic-reflection = "0.12.3"
+tonic-build = "0.12.3"
 prost = "0.13.3"
 prost-types = "0.13.3"
 jsonwebtoken = "9.3.0"
@@ -109,6 +112,8 @@ serde = { version = "1.0.215", features = ["derive"] }
 Now the Cargo.toml (also called as virtual manifest in this case) file in the root basically defines a workspace rather than a package. The `members` field lists the crates that are part of the workspace. The `workspace.dependencies` field is used to define dependencies that are shared across all crates in the workspace. Initially, we don't have any crates in the workspace, so we will leave the `members` field empty.
 
 But we have defined the dependencies that are shared across all crates in the workspace. The `tokio` crate is used for asynchronous programming, `tonic` is used for gRPC, `tonic-reflection` is used for gRPC reflection, `prost` and `prost-types` are used for protocol buffer serialization, `jsonwebtoken` is used for JWT token generation and verification, `chrono` is used for date and time manipulation, and `serde` is used for serialization and deserialization.
+
+`tonic-build` is used to compile the grpc service and message types from the proto file. We will use this crate in the `proto_stub` crate as build dependency.
 
 Now let's create the `authy`, `proto_stub`, `security`, and `database` crates. Run the following commands to create the crates:
 
@@ -137,20 +142,20 @@ members = [
  # common dependencies for sub-crates
 ```
 
-Now we have set up the project structure and dependencies. 
+Now we have set up the project structure and dependencies.
 You can now run the following command to build the project:
 
 ```bash
 cargo build
 ```
+
 And to build the specif crate you can run the following command:
 
-```bash 
+```bash
 cargo build -p authy
 ```
 
 replace `authy` with the crate name you want to build.
-
 
 ## Conclusion
 

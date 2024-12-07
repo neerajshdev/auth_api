@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 tonic = { workspace = true }
+prost = "0.13.3"
 prost-types = "0.13.3"
 
 
