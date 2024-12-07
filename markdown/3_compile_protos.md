@@ -186,3 +186,23 @@ async fn main() -> Result<(), Box<dyn Error>> {
 }
 ```
 
+Now open the terminal and run the `cargo run -p authy` command. It will start the server and print the message `Running server on 50051` to the console.
+
+You can use the postman to test the reflection service. Open the postman and click on new and and select the gRPC request type as shown in the image below.
+
+![postman](images/select_grpc.jpg)
+
+In the request URL, enter the server address `grpc:\\localhost:50051`.
+Now click on the next text box and select the Use Server Reflection in the popup menu and you will see the available services and methods in the server as shown in the image below.
+
+![reflection](images/grpc_reflection.jpg)
+
+If you are seeing the available services and methods in the server, then the reflection service is working correctly.
+
+You can select one of the services and methods and send a request to the server to test the service it will return the unimplemented error because we haven't implemented the service yet.
+
+There are also other tools available to test the gRPC service like BloomRPC, grpcurl, grpcui, grpc-web, etc. You can use any of these tools to test the gRPC service.
+
+## Conclusion
+
+In this part, we compiled the proto file to generate the service stubs and message types. We also used the service reflection to make it easy to test the service from postman. In the next part, we will implement the service and client to authenticate the user using the gRPC service.
