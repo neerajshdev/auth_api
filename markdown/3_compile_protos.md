@@ -1,17 +1,22 @@
 
-# Step by step guide to build authentication api in Rust using gRPC
+# Part 3: Compiling the Protos and Setting up the gRPC server
 
-In the previous part, we defined our gRPC service interface using Protocol Buffers. In this part, we'll compile the proto file to generate the service stubs and message types and also use the service reflection to make it easy to testing the service from postman.
+## Overview
+
+In the previous part, we defined our gRPC service interface using Protocol Buffers. In this part, we'll compile the proto file to generate the service stubs and message types and also use the service reflection to make it easy to testing the service from the postman.
 
 If you don't know about the postman, it is a popular API client that allows you to test APIs by sending requests and viewing responses. You can download it from [here](https://www.postman.com/downloads/). Developers use Postman to test APIs, document APIs, monitor APIs, and share APIs with others. we can also use it to test our gRPC service.
 
 ## Table of Contents
 
-- [Compiling the Protobuf Definitions](#compiling-the-protobuf-definitions)
+- [Compiling the Protobuf](#compiling-the-protobuf)
   - [Creating the build script](#creating-the-build-script)
   - [Installing the protoc compiler](#installing-the-protoc-compiler)
+- [Integrate compiled gRPC stubs](#integrate-compiled-grpc-stubs)
+- [Setup the server](#setup-the-server)
+- [Conclusion](#conclusion)
 
-## Compiling the Protobuf Definitions
+## Compiling the Protobuf
 
 In rust we can write build scripts that are executed before the build process. We can use this to compile the proto file and generate the service stubs and message types. We will use the `tonic-build` crate to compile the proto file.
 
@@ -56,7 +61,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     tonic_build::configure()
         // compile_well_known_types will generate code for well known types like google.protobuf.Empty  
         // we can disable this if we use the prost-types crate, because i am using prost-types crate i will kept this disabled.
-        /* .compile_well_known_types(true) */
+        // compile_well_known_types(true) 
 
         // file_descriptor_set_path will generate a file descriptor set in the output directory
         // this file will be used by the server to provide reflection
@@ -107,7 +112,7 @@ run this powershell command to find the generated code in the target directory.
 Get-ChildItem -Path . -Recurse -Filter authy.protobuf.rs
 ```
 
-## Including the generated code to the proto_stub crate
+## Integrate compiled gRPC stubs
 
 Now we have the generated service stubs and message types in the output target directory.
 Edit the `lib.rs` file as shown below to include the generated code.
@@ -171,6 +176,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     /*
     We create a new server instance using the Server::builder() method. We then add a service to the server using the add_service() method. We configure the reflection service using the tonic_reflection::server::Builder::configure() method.
+
     We register the encoded file descriptor set using the register_encoded_file_descriptor_set() method. Finally, we build the server using the build_v1alpha() method and serve it on the specified address using the serve() method. We use the await keyword to wait for the server to start serving requests.
     */
     Server::builder()
@@ -201,7 +207,7 @@ If you are seeing the available services and methods in the server, then the ref
 
 You can select one of the services and methods and send a request to the server to test the service it will return the unimplemented error because we haven't implemented the service yet.
 
-There are also other tools available to test the gRPC service like BloomRPC, grpcurl, grpcui, grpc-web, etc. You can use any of these tools to test the gRPC service.
+Other tools like BloomRPC, grpcurl, grpcui, grpc-web, etc. can also be used to test the gRPC service. You can use any of these tools to test the gRPC service. But these tools are not in the scope of this series.
 
 ## Conclusion
 
