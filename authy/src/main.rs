@@ -17,13 +17,12 @@ use tonic::transport::Server;
 async fn main() -> Result<(), Box<dyn Error>> {
     // Parse the address from the address string
     let addr: SocketAddr = "0.0.0.0:50051".parse().unwrap();
-
     /*
     parse() on address string works because the SocketAddr type implements the FromStr trait. The parse() method is used to parse a string into a SocketAddr type and unwrap() is used to get the value from the Result type.
     */
 
     // Print message to the console
-    println!("Running server on {addr}");
+    println!("Running server on {}", addr);
 
     /*
     We create a new server instance using the Server::builder() method. We then add a service to the server using the add_service() method. We configure the reflection service using the tonic_reflection::server::Builder::configure() method.
